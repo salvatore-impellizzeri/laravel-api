@@ -15,7 +15,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::with('technologies')->get(); // Eager loading delle tecnologie
+        $projects = Project::with('technologies')->get();
         return view("admin.projects.index", compact("projects"));
     }
 
@@ -102,13 +102,12 @@ class ProjectController extends Controller
         $project->src = $data["src"];
         $project->visible = $request->input('visible') == '1';
 
-        $project->save(); // Usa save() invece di update()
+        $project->save(); 
 
-        // Aggiorna le tecnologie
         if (isset($data['technologies'])) {
-            $project->technologies()->sync($data['technologies']); // Sincronizza le tecnologie
+            $project->technologies()->sync($data['technologies']); 
         } else {
-            $project->technologies()->sync([]); // Rimuovi le tecnologie se non ne sono state selezionate
+            $project->technologies()->sync([]); 
         }
 
         return redirect()->route('admin.projects.show', ['project' => $project->id]);

@@ -18,6 +18,11 @@ class Project extends Model
         "type_id",
     ];
 
+    protected $hidden = [
+        'id',
+        'type_id'
+    ];
+
     public function type() {
         return $this->belongsTo(Type::class);
     }
