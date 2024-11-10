@@ -44,6 +44,8 @@ class ProjectController extends Controller
             'type_id' => 'nullable|exists:types,id',
         ]);
 
+        $data['slug'] = str()->slug($data['title']);
+
         $project = new Project();
         $project->title = $data["title"];
         $project->description = $data["description"];
@@ -92,6 +94,8 @@ class ProjectController extends Controller
             "visible"=> "nullable|in:1,0,true,false",
             'type_id' => 'nullable|exists:types,id',
         ]);
+
+        $data['slug'] = str()->slug($data['title']);
 
         $project->title = $data["title"];
         $project->description = $data["description"];

@@ -13,7 +13,6 @@ use App\Models\Technology;
 // Helpers
 use Illuminate\Support\Facades\Schema;
 
-
 class ProjectSeeder extends Seeder
 {
     /**
@@ -24,33 +23,42 @@ class ProjectSeeder extends Seeder
         Schema::withoutForeignKeyConstraints(function () {
             Project::truncate();
         });
+
+        for ($i = 0; $i < 20; $i++) {
+            $name = fake()->sentence();
+            $slug = str()->slug($name);
         
-        for($i = 0; $i < 10; $i++) {
+            $originalSlug = $slug;
+            $counter = 1;
+            while (Project::where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $counter++;
+            }
+
             $randomTypeId = null;
-            if(rand(0,1)){
+            if (rand(0, 1)) {
                 $randomType = Type::inRandomOrder()->first();
                 $randomTypeId = $randomType->id;
             }
 
             $project = Project::create([
-                'title' => fake()->sentence(),
-                'description'=> fake()->paragraph(),
-                'src'=> fake()->imageUrl(),
-                'visible'=> fake()->boolean(70),
-                'type_id'=> $randomTypeId,
+                'title' => $name,
+                'slug' => $slug,
+                'description' => fake()->paragraph(),
+                'src' => fake()->imageUrl(),
+                'visible' => fake()->boolean(70),
+                'type_id' => $randomTypeId,
             ]);
 
             $technologyIds = [];
-
-            for ($j=0; $j < rand(0, Technology::count()); $j++) { 
+            for ($j = 0; $j < rand(0, Technology::count()); $j++) {
                 $randomTechnology = Technology::inRandomOrder()->first();
 
-                if(!in_array($randomTechnology->id, $technologyIds)){
+                if (!in_array($randomTechnology->id, $technologyIds)) {
                     $technologyIds[] = $randomTechnology->id;
                 }
             }
-            
-            $project->technology()->sync($technologyIds);
+
+            $project->technologies()->sync($technologyIds);
         }
     }
 }
